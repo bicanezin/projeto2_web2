@@ -1,9 +1,9 @@
 import React from "react";
-import "./App.css";
 import Routes from "./routes";
+import GobalStyle from './styles/global';
 
 function App() {
-  return <Routes />;
+  return <><Routes /><GobalStyle /></>;
 }
 
 export default App;

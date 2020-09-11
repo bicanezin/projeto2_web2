@@ -2,7 +2,7 @@ import React from "react";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 
-function AlertMessage({ message, type }) {
+function AlertMessage({ message, type, duration }) {
   const [open, setOpen] = React.useState(true);
   function handleClose(event, reason) {
     if (reason === "clickaway") {
@@ -16,7 +16,7 @@ function AlertMessage({ message, type }) {
       <Snackbar
         anchorOrigin={{ horizontal: "center", vertical: "top" }}
         open={open}
-        autoHideDuration={4000}
+        autoHideDuration={duration || 4000}
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity={type}>
