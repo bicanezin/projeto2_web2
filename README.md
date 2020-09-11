@@ -1,17 +1,15 @@
 ﻿﻿# Projeto 2 - Programação Web 2 IF67I - Turma ES71 (2020_01)
- 
- ## Link do projeto
 
- 
- ### Alunos:
- - Bianca Canezin
- - Eduardo Spagna
+## Link do projeto
 
+https://projeto2-web2.web.app/
 
+### Alunos:
 
-__ 
+- Bianca Canezin
+- Eduardo Spagna
 
-
+\_\_
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
