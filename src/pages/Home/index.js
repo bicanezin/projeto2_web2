@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import Cookies from 'universal-cookie';
+import { Redirect } from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { Container, Button } from './styles';
@@ -12,6 +13,14 @@ function Home() {
   const [urlList, setUrlList] = React.useState([]);
   const [status, setStatus] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [redirect, setRedirect] = React.useState(false);
+  const cookies = new Cookies();
+
+
+  const logout = async () => {
+    cookies.remove('loginToken');
+    setRedirect(true);
+  };
 
   const shortenUrl = () => {
     setLoading(true);
@@ -33,7 +42,6 @@ function Home() {
           key: Math.random(),
           type: "success",
         });
-        console.log(res)
       })
       .catch((error) => {
         setLoading(false);
@@ -43,9 +51,12 @@ function Home() {
       .finally(setUrl(""));
   };
 
+  if (redirect) {
+    return <Redirect push to="/" />;
+  }
   return (
     <Container>
-      <Link to="/">Login (isso apaga os cookies)</Link>
+      <p onClick={() => logout()} className="link">Sair</p>
       <div>
         <img
           alt="logo UTFShortener"

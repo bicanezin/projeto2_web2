@@ -7,6 +7,13 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
 
+    .link {
+        cursor: pointer;
+        color: #A23;
+        align-self: start;
+        align-text: start;
+    }
+
     img {
         height: 200px;
         width: 200px;

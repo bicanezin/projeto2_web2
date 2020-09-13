@@ -1,20 +1,20 @@
 import React from 'react';
 import axios from "axios";
 import Cookies from 'universal-cookie';
-import { Redirect, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import useForm from "./useForm";
 import AlertMessage from "../../components/Alert";
 import { Container, Form, Buttons } from './styles';
 
-const Login = () => {
+const SignUp = () => {
   const [status, setStatus] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [redirect, setRedirect] = React.useState(false);
   const initialValues = {
     email: '',
     password: '',
+    confirmPassword: ''
   }
   const cookies = new Cookies();
 
@@ -30,6 +30,9 @@ const Login = () => {
     } else if (values.password.length < 3) {
       errors.password = 'Insira uma senha com 3 ou mais caracteres';
     }
+    if (values.confirmPassword !== values.password) {
+      errors.confirmPassword = 'Insira senhas iguais';
+    }
     return errors;
   };
 
@@ -40,29 +43,18 @@ const Login = () => {
     handleSubmit,
   } = useForm(initialValues, handleSignIn, validate);
 
-  React.useEffect(() => {
-    const handleCookies = async () => {
-      cookies.remove('loginToken');
-      const token = await cookies.get('loginToken');
-      token !== undefined ? setRedirect(true) : setRedirect(false);
-    }
-    handleCookies();
-  }, [cookies]);
-  
-  // async function handleCookies() {
-  // }
-
   function handleSignIn() {
     setLoading(true);
+
     let config = {
       method: "POST",
-      url: "https://reqres.in/api/login",
+      url: "https://reqres.in/api/register",
       data: {
         "email": values.email, "password": values.password
       }
     }
 
-   axios(config)
+    axios(config)
       .then((res) => {
         setLoading(false);
         cookies.set('loginToken', res.data.token, { path: '/', httpOnly: false, });
@@ -85,7 +77,7 @@ const Login = () => {
         <img
           alt="logo UTFShortener"
           src={require("../../assets/logo512.png")} />
-        <h3>Login</h3>
+        <h3>Cadastro</h3>
 
         <Form onSubmit={handleSubmit} noValidate>
           <label>Email</label>
@@ -118,15 +110,28 @@ const Login = () => {
             </p>
           )}
 
-          {loading ? <CircularProgress size={"30px"} color={"inherit"} className="loading" /> :
+          <label>Confirmar senha</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            onChange={handleChange}
+            value={values.confirmPassword}
+            required
+          />
+
+          {errors.confirmPassword && (
+            <p className="error">
+              {errors.confirmPassword}
+            </p>
+          )}
+
+          {loading ? <CircularProgress size={"30px"} color={"inherit"} className="loading"/> :
             <Buttons>
               <button
                 disabled={loading}
               >
-                Login
+                Salvar
                 </button>
-              <p>OU</p>
-              <Link to="/signUp">Cadastre-se</Link>
             </Buttons>
           }
         </Form>
@@ -144,4 +149,4 @@ const Login = () => {
   );
 }
 
-export default Login;
+export default SignUp;

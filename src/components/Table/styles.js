@@ -42,9 +42,9 @@ export const Container = styled.div`
     }
 
     input {
+        width: 200px;
         font-size: 15px;
         border: 0px;
-        background: 'transparent';
     }
 
     img {
@@ -54,7 +54,6 @@ export const Container = styled.div`
         cursor: pointer;
     }
   
-
     .loading {
     padding: 10px;
     width: 310px;
