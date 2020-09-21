@@ -5,16 +5,15 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import useForm from "./useForm";
 import { getToken, setUserSession } from '../../utils/common';
-import AlertMessage from "../../components/Alert";
 import { Container, Form, Buttons } from './styles';
 
 const Login = () => {
-  const [status, setStatus] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [redirect, setRedirect] = React.useState(false);
   const initialValues = {
     email: '',
     password: '',
+    postError: ''
   }
 
   function validate(values) {
@@ -50,7 +49,7 @@ const Login = () => {
       console.log(error);
     });
   }, []);
-  
+
   function handleSignIn() {
     setLoading(true);
     let config = {
@@ -61,14 +60,14 @@ const Login = () => {
       }
     }
 
-   axios(config)
+    axios(config)
       .then((res) => {
         setLoading(false);
         setUserSession(res.data.token);
       }).then(() => setRedirect(true))
       .catch(error => {
+        errors.postError = "Dados inválidos!";
         setLoading(false);
-        setStatus({ msg: "Dados inválidos!", key: Math.random(), type: "error", duration: 10000 });
         console.log(error);
       })
   };
@@ -85,6 +84,11 @@ const Login = () => {
         <h3>Login</h3>
 
         <Form onSubmit={handleSubmit} noValidate>
+          {errors.postError && (
+            <p className="error">
+              {errors.postError}
+            </p>
+          )}
           <label>Email</label>
           <input
             autoComplete="off"
@@ -128,15 +132,6 @@ const Login = () => {
           }
         </Form>
       </div>
-
-      {status ? (
-        <AlertMessage
-          key={status.key}
-          message={status.msg}
-          type={status.type}
-          duration={status.duration}
-        />
-      ) : null}
     </Container>
   );
 }

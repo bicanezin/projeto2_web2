@@ -1,3 +1,4 @@
+  
 import React from 'react';
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -5,17 +6,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import useForm from "./useForm";
 import { getToken, setUserSession } from '../../utils/common';
-import AlertMessage from "../../components/Alert";
 import { Container, Form, Buttons } from './styles';
 
 const SignUp = () => {
-  const [status, setStatus] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [redirect, setRedirect] = React.useState(false);
   const initialValues = {
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    postError: ''
   }
 
   function validate(values) {
@@ -42,7 +42,7 @@ const SignUp = () => {
     handleChange,
     handleSubmit,
   } = useForm(initialValues, handleSignIn, validate);
-  
+
   React.useEffect(() => {
     getToken().then(function
       (result) {
@@ -72,8 +72,8 @@ const SignUp = () => {
         setUserSession(res.data.token);
       }).then(() => setRedirect(true))
       .catch(error => {
+        errors.postError = "Dados inválidos!";
         setLoading(false);
-        setStatus({ msg: "Dados inválidos!", key: Math.random(), type: "error", duration: 10000 });
         console.log(error);
       })
   };
@@ -90,6 +90,11 @@ const SignUp = () => {
         <h3>Cadastro</h3>
 
         <Form onSubmit={handleSubmit} noValidate>
+          {errors.postError && (
+            <p className="error">
+              {errors.postError}
+            </p>
+          )}
           <label>Email</label>
           <input
             autoComplete="off"
@@ -135,7 +140,7 @@ const SignUp = () => {
             </p>
           )}
 
-          {loading ? <CircularProgress size={"30px"} color={"inherit"} className="loading"/> :
+          {loading ? <CircularProgress size={"30px"} color={"inherit"} className="loading" /> :
             <Buttons>
               <button
                 disabled={loading}
@@ -146,15 +151,6 @@ const SignUp = () => {
           }
         </Form>
       </div>
-
-      {status ? (
-        <AlertMessage
-          key={status.key}
-          message={status.msg}
-          type={status.type}
-          duration={status.duration}
-        />
-      ) : null}
     </Container>
   );
 }
