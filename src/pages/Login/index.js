@@ -1,10 +1,10 @@
 import React from 'react';
 import axios from "axios";
-import Cookies from 'universal-cookie';
 import { Redirect, Link } from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import useForm from "./useForm";
+import { getToken, setUserSession } from '../../utils/common';
 import AlertMessage from "../../components/Alert";
 import { Container, Form, Buttons } from './styles';
 
@@ -16,7 +16,6 @@ const Login = () => {
     email: '',
     password: '',
   }
-  const cookies = new Cookies();
 
   function validate(values) {
     let errors = {};
@@ -41,17 +40,17 @@ const Login = () => {
   } = useForm(initialValues, handleSignIn, validate);
 
   React.useEffect(() => {
-    const handleCookies = async () => {
-      cookies.remove('loginToken');
-      const token = await cookies.get('loginToken');
-      token !== undefined ? setRedirect(true) : setRedirect(false);
-    }
-    handleCookies();
-  }, [cookies]);
+    getToken().then(function
+      (result) {
+      if (result === null)
+        setRedirect(false);
+      else
+        setRedirect(true);
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }, []);
   
-  // async function handleCookies() {
-  // }
-
   function handleSignIn() {
     setLoading(true);
     let config = {
@@ -65,9 +64,7 @@ const Login = () => {
    axios(config)
       .then((res) => {
         setLoading(false);
-        cookies.set('loginToken', res.data.token, { path: '/', httpOnly: false, });
-        cookies.set('userId', res.data.id, { path: '/', httpOnly: false, });
-        cookies.set('email', values.email, { path: '/', httpOnly: false, });
+        setUserSession(res.data.token);
       }).then(() => setRedirect(true))
       .catch(error => {
         setLoading(false);
