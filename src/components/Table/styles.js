@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-    width: 900px;
+    width: 950px;
     ${'' /* background: #BB669A; */}
     display: flex;
     flex-direction: row;
@@ -19,7 +19,7 @@ export const Container = styled.div`
 
     table {
         table-layout:fixed;
-        width:90%;
+        width:100%;
     }
 
     th:nth-of-type(2),    
@@ -37,12 +37,12 @@ export const Container = styled.div`
         font-size: 14px;
         text-align: center;
         border: 1px solid #dddddd;
-        padding: 8px;
-        width: 50px;
+        padding: 7px;
+        width: 150px;
     }
 
     input {
-        width: 200px;
+        width: 410px;
         font-size: 15px;
         border: 0px;
     }

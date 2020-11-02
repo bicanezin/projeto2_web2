@@ -1,40 +1,38 @@
 import React from "react";
 import axios from "axios";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-import { Container, Details } from './styles';
+import { Container, Details } from "./styles";
 import AlertMessage from "../Alert";
 
 function Table({ tableTitle, columnTitle, urlList }) {
   const [status, setStatus] = React.useState("");
   const [urlDetails, setUrlDetails] = React.useState([{ link: "", data: "" }]);
-  const [selectedDetail, setSelectedDetail] = React.useState(false)
+  const [selectedDetail, setSelectedDetail] = React.useState(false);
 
-  const handleUrlDetails = (hashId) => {
-    setSelectedDetail(true);
-    const config = {
-      method: "GET",
-      url: `https://rel.ink/api/links/${hashId}`,
-    };
-
-    axios(config)
-      .then((res) => {
-        setSelectedDetail(false);
-        const date = new Date(res.data.created_at).toLocaleDateString();
-        setUrlDetails([{ link: res.data.url, data: date }]);
-      })
-      .catch((error) => {
-        setSelectedDetail(false);
-        console.log(error);
-      });
+  const handleUrlDetails = (item) => {
+    setSelectedDetail(false);
+    const date = new Date(item.link_created_at).toLocaleDateString();
+    setUrlDetails([{ link: item.link_original, data: date }]);
   };
 
-  let link = "";
-  const copyToClipboard = () => {
-    link.select();
-    document.execCommand("copy");
-    setStatus({ msg: "Link copiado!", key: Math.random(), type: "success", duration: 4000 });
+  const copyToClipboard = async (link) => {
+    await navigator.clipboard.writeText(link);
+    setStatus({
+      msg: "Link copiado!",
+      key: Math.random(),
+      type: "success",
+      duration: 4000,
+    });
   };
+
+  if (urlList === []) {
+    return (
+      <div className="loading">
+        <CircularProgress size={"30px"} color={"inherit"} />
+      </div>
+    );
+  }
 
   return (
     <Container>
@@ -44,35 +42,35 @@ function Table({ tableTitle, columnTitle, urlList }) {
           <tbody>
             <tr>
               {columnTitle.map((item, index) => (
-                <th key={index}>
-                  {item}
-                </th>
+                <th key={index}>{item}</th>
               ))}
             </tr>
             {urlList !== undefined
               ? urlList.map((item, index) => (
-                <tr key={index}>
-                  <td >
-                    <input readOnly value={item.link} ref={(ref) => link = ref} />
-                  </td>
-                  <td>
-                    <img
-                      alt="icone copiar link"
-                      onClick={() => copyToClipboard()}
-                      src={require("../../assets/copy-link.png")}
-                    />
-                  </td>
-                  <td>
-                    <div>
+                  <tr key={index}>
+                    <td>
+                      <input readOnly value={item.link_shortened} />
+                    </td>
+                    <td>
                       <img
-                        alt="icone ver mais"
-                        onClick={() => handleUrlDetails(item.hashId)}
-                        src={require("../../assets/see_more.png")}
+                        alt="icone copiar link"
+                        onClick={() => {
+                          copyToClipboard(item.link_shortened);
+                        }}
+                        src={require("../../assets/copy-link.png")}
                       />
-                    </div>
-                  </td>
-                </tr>
-              ))
+                    </td>
+                    <td>
+                      <div>
+                        <img
+                          alt="icone ver mais"
+                          onClick={() => handleUrlDetails(item)}
+                          src={require("../../assets/see_more.png")}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
               : null}
           </tbody>
         </table>
@@ -83,18 +81,23 @@ function Table({ tableTitle, columnTitle, urlList }) {
           <div className="loading">
             <CircularProgress size={"30px"} color={"inherit"} />
           </div>
-        ) : urlDetails.map((item, index) => (
-          <Details key={index}>
-            {item.link !== "" ?
-              <> <p className="label">Link original:</p>
-                <p>{item.link}</p>
-                <p className="label">Data do encurtamento:</p>
-                <p>{item.data}</p>
-              </> : <p className="label">Escolha um link</p>}
-
-          </Details>
-        ))}
-
+        ) : (
+          urlDetails.map((item, index) => (
+            <Details key={index}>
+              {item.link !== "" ? (
+                <>
+                  {" "}
+                  <p className="label">Link original:</p>
+                  <p>{item.link}</p>
+                  <p className="label">Data do encurtamento:</p>
+                  <p>{item.data}</p>
+                </>
+              ) : (
+                <p className="label">Escolha um link</p>
+              )}
+            </Details>
+          ))
+        )}
       </div>
 
       {status ? (
