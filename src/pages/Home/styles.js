@@ -23,6 +23,7 @@ export const Container = styled.div`
   }
 
   img {
+    margin: 0 auto;
     height: 200px;
     width: 200px;
     margin-bottom: -20px;
