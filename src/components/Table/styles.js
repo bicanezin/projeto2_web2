@@ -43,8 +43,13 @@ export const Container = styled.div`
 
     input {
         width: 410px;
-        font-size: 15px;
+        font-size: 14px;
         border: 0px;
+    }
+
+    .link{
+        color: blue;
+        cursor: pointer;
     }
 
     img {
@@ -69,7 +74,7 @@ export const Details = styled.div`
     width: 300px;
     word-wrap: break-word;
     border: 2px solid #091636;
-    background: #a7a7a9;
+    background: #E8E8E8;
     display: flex;
     flex-direction: column;
     margin-left: 10px;

@@ -49,7 +49,14 @@ function Table({ tableTitle, columnTitle, urlList }) {
               ? urlList.map((item, index) => (
                   <tr key={index}>
                     <td>
-                      <input readOnly value={item.link_shortened} />
+                      <input
+                        className="link"
+                        readOnly
+                        onClick={() =>
+                          window.location.replace(item.link_shortened)
+                        }
+                        value={item.link_shortened}
+                      />
                     </td>
                     <td>
                       <img
