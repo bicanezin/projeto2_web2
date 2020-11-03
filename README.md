@@ -1,8 +1,12 @@
 ﻿﻿# Projeto 3 - Programação Web 2 IF67I - Turma ES71 (2020_01)
 
-## Link do projeto
+## Link do repositório da API
 
-https://projeto2-web2.web.app/
+https://github.com/eduardo-spagna/progamacao-web2-trabalho3-api
+
+## Link da documentação da API
+
+https://documenter.getpostman.com/view/5076982/TVYKbxHD
 
 ### Alunos:
 
