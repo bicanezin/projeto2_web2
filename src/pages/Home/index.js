@@ -13,9 +13,11 @@ function Home() {
   const [urlList, setUrlList] = React.useState([]);
   const [status, setStatus] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [loadingTable, setLoadingTable] = React.useState(false);
   const [redirect, setRedirect] = React.useState(false);
   const [token, setToken] = React.useState(null);
   const [userEmail, setUserEmail] = React.useState("");
+  const [searchInput, setSearchInput] = React.useState("");
 
   React.useEffect(() => {
     getToken()
@@ -73,6 +75,9 @@ function Home() {
   };
 
   const getLinks = (token) => {
+    setLoading(true);
+    setLoadingTable(true);
+
     const config = {
       method: "GET",
       url: "https://web2-trab3-api.herokuapp.com/api/v1/links",
@@ -82,6 +87,30 @@ function Home() {
     axios(config)
       .then((res) => {
         setLoading(false);
+        setLoadingTable(false);
+        setUrlList(res.data.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setLoadingTable(false);
+        setStatus({ msg: "URL inválida!", key: Math.random(), type: "error" });
+        console.log(error);
+      })
+      .finally(setUrl(""));
+  };
+
+  const search = async (val) => {
+    setLoadingTable(true);
+
+    const config = {
+      method: "GET",
+      url: `https://web2-trab3-api.herokuapp.com/api/v1/links?search=${val}`,
+      headers: { Authorization: "Bearer " + token },
+    };
+
+    axios(config)
+      .then((res) => {
+        setLoadingTable(false);
         setUrlList(res.data.data);
       })
       .catch((error) => {
@@ -92,6 +121,11 @@ function Home() {
       .finally(setUrl(""));
   };
 
+  const onChangeHandler = async (e) => {
+    search(e.target.value);
+    setSearchInput(e.target.value);
+  };
+
   if (redirect) {
     return <Redirect push to="/" />;
   }
@@ -99,7 +133,7 @@ function Home() {
     <Container>
       <p className="user_email">{userEmail}</p>
       <p onClick={() => logout()} className="logout">
-        Sair
+        sair
       </p>
       <div>
         <img
@@ -124,11 +158,45 @@ function Home() {
           )}
         </div>
 
-        <Table
-          tableTitle={"Links encurtados:"}
-          columnTitle={["Link Curto", "Copiar Link", "Ver Detalhes"]}
-          urlList={urlList}
-        />
+        <div className={"searchContainer"}>
+          <img
+            className="searchIcon"
+            alt="icone lupa"
+            src={require("../../assets/loupe.png")}
+          />
+
+          <input
+            className="search"
+            value={searchInput}
+            onChange={(e) => onChangeHandler(e)}
+            placeholder="Busque pelo link encurtado ou original"
+          ></input>
+        </div>
+
+        {loadingTable ? (
+          <div>
+            <CircularProgress
+              style={{ alignSelf: "center", marginTop: "100px" }}
+              size={"30px"}
+              color={"inherit"}
+            />
+          </div>
+        ) : (
+          <div>
+            {console.log()}
+            {urlList.length === 0 ? (
+              <p style={{ marginTop: "100px", color: "red" }}>
+                Nenhum link encontrado!
+              </p>
+            ) : (
+              <Table
+                tableTitle={"Links encurtados:"}
+                columnTitle={["Link Curto", "Copiar Link", "Ver Detalhes"]}
+                urlList={urlList}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {status ? (
