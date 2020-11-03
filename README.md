@@ -1,4 +1,4 @@
-﻿﻿# Projeto 3 - Programação Web 2 IF67I - Turma ES71 (2020_01)
+# Projeto 3 - Programação Web 2 IF67I - Turma ES71 (2020_01)
 
 ## Link do repositório da API
 
